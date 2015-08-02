@@ -9,6 +9,8 @@
         <title>{{title}}</title>
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="http://getbootstrap.com/examples/navbar-fixed-top/navbar-fixed-top.css" rel="stylesheet">
+        <link rel="icon" href="/../images/icon.png">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     </head>
 
     <body cz-shortcut-listen="true">
@@ -19,8 +21,23 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="/">Мои книги</a></li>
-                        <li><a href="/">Каталог</a></li>
+                        {% if title == "Главная"%}
+                           <li class="active"><a href="/">Главная</a></li>
+                        {% else %}
+                           <li><a href="/">Главная</a></li>
+                        {% endif %}
+
+                        {% if title == "Мои книги"%}
+                           <li class="active"><a href="/myBooks">Мои книги</a></li>
+                        {% else %}
+                           <li><a href="/myBooks">Мои книги</a></li>
+                        {% endif %}
+
+                        {% if title == "Каталог"%}
+                            <li class="active"><a href="/books">Каталог</a></li>
+                        {% else %}
+                            <li><a href="/books">Каталог</a></li>
+                        {% endif %}
                     </ul>
                     <form class="navbar-form navbar-right">
                         <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{user.booksCount}} книг</p>
@@ -34,5 +51,6 @@
             {% block content %}
             {% endblock %}
         </div>
+
     </body>
 </html>

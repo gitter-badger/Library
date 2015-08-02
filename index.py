@@ -5,10 +5,6 @@ app = Flask(__name__)
 
 user = {"name": "Иван Иванов", "booksCount": 12}
 
-@app.route("/")
-def home():
-	return render_template("home.html", title = "Мои книги", user = user)
-
 @app.route("/login")
 def login():
 	return render_template("login.html")
@@ -16,5 +12,17 @@ def login():
 @app.route("/reg")
 def reg():
 	return render_template("reg.html")
+
+@app.route("/")
+def home():
+	return render_template("home.html", title = "Главная", user = user)
+
+@app.route("/myBooks")
+def myBooks():
+	return render_template("myBooks.html", title = "Мои книги", user = user)
+
+@app.route("/books")
+def books():
+	return render_template("books.html", title = "Каталог", user = user)
 
 app.run(host="::", port=5000, debug=True)
