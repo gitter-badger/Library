@@ -3,9 +3,11 @@ from flask import Flask, render_template, redirect
 
 app = Flask(__name__)
 
+user = {"name": "Иван Иванов", "booksCount": 12}
+
 @app.route("/")
-def index():
-	return redirect("/login")
+def home():
+	return render_template("home.html", title = "Мои книги", user = user)
 
 @app.route("/login")
 def login():
