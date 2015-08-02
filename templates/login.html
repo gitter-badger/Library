@@ -25,6 +25,9 @@
 		        </div>
 		        <button class="btn btn-lg btn-success btn-block" type="submit">Вход</button>
 		        <a class="btn btn-lg btn-primary btn-block" href="reg">Регистрация</a>
+		        {% if devise == "terminal"%}
+		            <a class="btn btn-lg btn-info btn-block">Или приложите карту к сканеру</a>
+		        {% endif %}
 		    </form>
 	    </div>
 	</body>
