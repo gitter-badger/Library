@@ -21,19 +21,19 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        {% if title == "Главная"%}
+                        {% if title == "Главная" %}
                            <li class="active"><a href="/">Главная</a></li>
                         {% else %}
                            <li><a href="/">Главная</a></li>
                         {% endif %}
 
-                        {% if title == "Мои книги"%}
+                        {% if title == "Мои книги" %}
                            <li class="active"><a href="/myBooks">Мои книги</a></li>
                         {% else %}
                            <li><a href="/myBooks">Мои книги</a></li>
                         {% endif %}
 
-                        {% if title == "Каталог"%}
+                        {% if title == "Каталог" %}
                             <li class="active"><a href="/books">Каталог</a></li>
                         {% else %}
                             <li><a href="/books">Каталог</a></li>
@@ -41,13 +41,13 @@
 
                         {% if devise == "terminal"%}
                             
-                            {% if title == "Взять книги"%}
+                            {% if title == "Взять книги" %}
                                 <li class="active"><a href="/handBooks">Взять книги</a></li>
                             {% else %}
                                 <li><a href="/handBooks">Взять книги</a></li>
                             {% endif %}
 
-                            {% if title == "Вернуть книги"%}
+                            {% if title == "Вернуть книги" %}
                                 <li class="active"><a href="/returnBooks">Вернуть книги</a></li>
                             {% else %}
                                 <li><a href="/returnBooks">Вернуть книги</a></li>
@@ -57,7 +57,19 @@
 
                     </ul>
                     <form class="navbar-form navbar-right">
-                        <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{user.booksCount}} книг</p>
+
+                        {% if user.booksCount % 10 == 1 %}
+                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{user.booksCount}} книга</p>
+                        {% endif %}
+
+                        {% if user.booksCount % 10 == 2 or user.booksCount % 10 == 3 or user.booksCount % 10 == 4 %}
+                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{user.booksCount}} книги</p>
+                        {% endif %}
+
+                        {% if user.booksCount % 10 > 4 or user.booksCount % 10 == 0 %}
+                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{user.booksCount}} книг</p>
+                        {% endif %}
+
                         <a href="/login" class="btn btn-default">Выход</a>
                     </form>
                 </div>

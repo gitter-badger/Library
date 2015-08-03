@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, redirect
 import configparser
+
+config = configparser.ConfigParser()
+config.read('config.cf')
 
 app = Flask(__name__)
 
@@ -62,8 +67,5 @@ def returnBooks():
 @app.route('/term', methods=['POST'])
 def tarminal():
 	pass
-
-config = configparser.ConfigParser()
-config.read('config.cf')
 
 app.run(host = config["Server"]["host"], port = 5000, debug = True)
