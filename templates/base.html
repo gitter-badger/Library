@@ -28,9 +28,9 @@
                         {% endif %}
 
                         {% if title == "Мои книги" %}
-                           <li class="active"><a href="/myBooks">Мои книги</a></li>
+                           <li class="active"><a href="/handed">Мои книги</a></li>
                         {% else %}
-                           <li><a href="/myBooks">Мои книги</a></li>
+                           <li><a href="/handed">Мои книги</a></li>
                         {% endif %}
 
                         {% if title == "Каталог" %}
@@ -41,16 +41,10 @@
 
                         {% if devise == "terminal"%}
                             
-                            {% if title == "Взять книги" %}
-                                <li class="active"><a href="/handBooks">Взять книги</a></li>
+                            {% if title == "Взять/Вернуть книги" %}
+                                <li class="active"><a href="/operations">Взять/Вернуть книги</a></li>
                             {% else %}
-                                <li><a href="/handBooks">Взять книги</a></li>
-                            {% endif %}
-
-                            {% if title == "Вернуть книги" %}
-                                <li class="active"><a href="/returnBooks">Вернуть книги</a></li>
-                            {% else %}
-                                <li><a href="/returnBooks">Вернуть книги</a></li>
+                                <li><a href="/operations">Взять/Вернуть книги</a></li>
                             {% endif %}
 
                         {% endif %}
@@ -58,16 +52,16 @@
                     </ul>
                     <form class="navbar-form navbar-right">
 
-                        {% if user.booksCount % 10 == 1 %}
-                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{user.booksCount}} книга</p>
+                        {% if booksLen % 10 == 1 %}
+                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{booksLen}} книга</p>
                         {% endif %}
 
-                        {% if user.booksCount % 10 == 2 or user.booksCount % 10 == 3 or user.booksCount % 10 == 4 %}
-                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{user.booksCount}} книги</p>
+                        {% if booksLen % 10 == 2 or booksLen % 10 == 3 or booksLen % 10 == 4 %}
+                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{booksLen}} книги</p>
                         {% endif %}
 
-                        {% if user.booksCount % 10 > 4 or user.booksCount % 10 == 0 %}
-                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{user.booksCount}} книг</p>
+                        {% if booksLen % 10 > 4 or booksLen % 10 == 0 %}
+                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{booksLen}} книг</p>
                         {% endif %}
 
                         <a href="/login" class="btn btn-default">Выход</a>
