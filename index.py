@@ -5,6 +5,23 @@ app = Flask(__name__)
 
 user = {"name": "Иван Иванов", "booksCount": 12}
 devise = "terminal"
+books = [
+	{
+		"title" : "Что такое математика?",
+		"author": "Р. Курант Г. Роббинс",
+		"image": "http://math4school.ru/img/math4school_ru/books/book_review_002.jpg",
+	}, 
+	{
+		"title" : "Что такое математика?",
+		"author": "Р. Курант Г. Роббинс",
+		"image": "http://math4school.ru/img/math4school_ru/books/book_review_002.jpg",
+	}, 
+	{
+		"title" : "Что такое математика?",
+		"author": "Р. Курант Г. Роббинс",
+		"image": "http://math4school.ru/img/math4school_ru/books/book_review_002.jpg",
+	}, 
+]
 
 @app.route("/login")
 def login():
@@ -20,7 +37,7 @@ def home():
 
 @app.route("/myBooks")
 def myBooks():
-	return render_template("myBooks.html", title = "Мои книги", user = user, devise = devise)
+	return render_template("myBooks.html", title = "Мои книги", user = user, devise = devise, books = books)
 
 @app.route("/books")
 def books():
