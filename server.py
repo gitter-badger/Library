@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, redirect
+import configparser
 
 app = Flask(__name__)
 
@@ -58,4 +59,11 @@ def handBooks():
 def returnBooks():
 	return render_template("returnBooks.html", title = "Вернуть книги", user = user, devise = devise)
 
-app.run(host="::", port=5000, debug=True)
+@app.route('/term', methods=['POST'])
+def tarminal():
+	pass
+
+config = configparser.ConfigParser()
+config.read('config.cf')
+
+app.run(host = config["Server"]["host"], port = 5000, debug = True)
