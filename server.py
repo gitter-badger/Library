@@ -44,10 +44,10 @@ def dbHandsInsert(user, book):
     global db
     now = datetime.utcnow()
     db.hands.insert({
-            "user": user,
-            "book": book,
-            "datetime": now,
-        })
+        "user": user,
+        "book": book,
+        "datetime": now,
+    })
 
 
 def dbHandFind(user, book):
@@ -64,11 +64,11 @@ def dbJournalInsert(user, book, action):
     global db
     now = datetime.utcnow()
     db.journal.insert({
-            "user": user,
-            "book": book,
-            "datetime": now,
-            "action": action,
-        })
+        "user": user,
+        "book": book,
+        "datetime": now,
+        "action": action,
+    })
 
 
 def render_template(template_name, **context):
