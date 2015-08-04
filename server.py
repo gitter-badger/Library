@@ -83,7 +83,7 @@ def operations():
     return render_template("operations")
 
 
-@app.route('/term', methods=['POST'])
+@app.route('/term', methods = ['POST'])
 def terminal():
     form = request.form
     if form["type"] == "user":
@@ -113,24 +113,33 @@ def successBookReturn(terminal, book):
 def userBookOperation(terminal, book):
     global db
     user = curentTerminalUser(terminal)
-    if db.hands.find_one({"user": user, "book": book}) is not None:
+    if db.hands.find_one({'user': user, 'book': book}) is not None:
         db.hands.insert({
             "user": user,
             "book": book,
             "datetime": datetime.utcnow(),
-            "status": "on",
         })
-        books.update({"_id": book}, {"$set": {"handed": int(books.find_one({"_id": book})["handed"]) + 1}})
+        db.journal.insert({
+            "user": user,
+            "book": book,
+            "datetime" datetime.utcnow(),
+            "action": "hand",
+            })
         successBookHand(terminal, book)
     else:
-        db.hands.update({"user": active_user, "book": book}, {"$set": {"status": "off"}})
-        books.update({"_id": book}, {"$set": {"handed": int(books.find_one({"_id": book})["handed"]) - 1}})
+        db.hands.remove({"user": user, "book": book})
+        db.journal.insert({
+            "user": user,
+            "book": book,
+            "datetime" datetime.utcnow(),
+            "action": "return",
+            })
         successBookReturn(terminal, book)
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
-    app.run(host=config["Server"]["host"], debug=True)
+    logging.basicConfig(level = logging.DEBUG)
+    app.run(host = config["Server"]["host"], debug = True)
 
 
 if __name__ == '__main__':
