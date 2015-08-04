@@ -35,9 +35,7 @@ def db_terminal_get(client_ip):
 
 
 def db_terminal_get_uuid(client_ip):
-    global db
-    terminal_uuid = db.terminals.find_one({'ip': client_ip})["uuid"]
-    return terminal_uuid
+    return db_terminal_get(client_ip)["uuid"]
 
 
 def db_hand_add(user, book):
