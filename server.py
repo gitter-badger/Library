@@ -24,23 +24,23 @@ def open_db():
     return pymongo.MongoClient().digital_library
 
 
-def dbTerminalsInsert(client_ip, terminal_uuid):
+def db_terminal_add(client_ip, terminal_uuid):
     global db
     db.terminals.insert({"ip": client_ip, "uuid": str(terminal_uuid)})
 
 
-def dbTerminalsFind(client_ip):
+def db_terminal_get(client_ip):
     global db
     return db.terminals.find_one({'ip': client_ip})
 
 
-def dbTerminalsFindUUID(client_ip):
+def db_terminal_get_uuid(client_ip):
     global db
     terminal_uuid = db.terminals.find_one({'ip': client_ip})["uuid"]
     return terminal_uuid
 
 
-def dbHandsInsert(user, book):
+def db_hand_add(user, book):
     global db
     now = datetime.utcnow()
     db.hands.insert({
@@ -50,24 +50,29 @@ def dbHandsInsert(user, book):
     })
 
 
-def dbHandFind(user, book):
+def db_hand_get(user, book):
     global db
     return db.hands.find_one({'user': user, 'book': book})
 
 
-def dbHandsRemove(user, book):
+def db_hand_exists(user, book):
+    return db_hand_get(user, book) is not None
+
+
+def db_hand_delete(user, book):
     global db
     db.hands.remove({"user": user, "book": book})
 
 
-def dbJournalInsert(user, book, action):
+def db_handlog_add(user, book, event):
     global db
+    assert event in {'hand', 'return'}
     now = datetime.utcnow()
-    db.journal.insert({
+    db.handlog.insert({
         "user": user,
         "book": book,
         "datetime": now,
-        "action": action,
+        "event": event,
     })
 
 
@@ -147,12 +152,12 @@ def scanner_data():
 @app.route('/connect')
 def get_current_user():
     client_ip = request.remote_addr
-    terminal_uuid = uuid.uuid4()
-    if(dbTerminalsFind(client_ip) is not None):
-        return jsonify(terminal_uuid=dbTerminalsFindUUID(client_ip))
-        dbTerminalsFind(client_ip)["uuid"]
+    terminal = db_terminal_get(client_ip)
+    if terminal is not None:
+        return jsonify(terminal_uuid=terminal['uuid'])
     else:
-        dbTerminalsInsert(client_ip, terminal_uuid)
+        terminal_uuid = uuid.uuid4()
+        db_terminal_add(client_ip, terminal_uuid)
         return jsonify(terminal_uuid=terminal_uuid)
 
 
@@ -171,13 +176,13 @@ def success_book_return(terminal, book):
 def user_book_operation(terminal, book):
     user = current_terminal_user(terminal)
     now = datetime.utcnow()
-    if dbHandFind(user, book) is not None:
-        dbHandsInsert(user, book)
-        dbJournalInsert(user, book, "hand")
+    if db_hand_exists(user, book):
+        db_hand_add(user, book)
+        db_handlog_add(user, book, "hand")
         success_book_hand(terminal, book)
     else:
-        dbHandsRemove(user, book)
-        dbJournalInsert(user, book, "return")
+        db_hand_delete(user, book)
+        db_handlog_add(user, book, "return")
         success_book_return(terminal, book)
 
 
