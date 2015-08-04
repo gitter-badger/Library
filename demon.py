@@ -12,8 +12,8 @@ config = configparser.ConfigParser()
 config.read('config.cf')
 
 if(config["Demon"]["uuid"] == "id"): 
-	config["Demon"]["uuid"] = json.loads(requests.get("http://localhost:5000/connect").text)["terminal_id"]
-	terminal_id = config["Demon"]["uuid"]
+	config["Demon"]["uuid"] = json.loads(requests.get("http://localhost:5000/connect").text)["terminal_uuid"]
+	terminal_uuid = config["Demon"]["uuid"]
 
 
 class Scanner:
@@ -33,7 +33,7 @@ class Scanner:
 def send_terminal_data(user, book):
     requests.post(
         "http://localhost:5000/term",
-        data={"user": user, "book": book, "id": terminal_id},
+        data={"user": user, "book": book, "id": terminal_uuid},
     )
 
 pack_none = {
