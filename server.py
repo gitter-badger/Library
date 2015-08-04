@@ -19,13 +19,13 @@ db = pymongo.MongoClient().digital_library
 
 app = Flask('digital_library')
 
-def dbClientsInsert(client_ip):
+def dbTerminalsInsert(client_ip):
     global db
-    db.clients.insert({"ip": client_ip})
+    db.terminals.insert({"ip": client_ip})
 
-def dbClientsFind(client_ip):
+def dbTerminalsFind(client_ip):
     global db
-    return db.clients.find_one({'ip': client_ip})
+    return db.terminals.find_one({'ip': client_ip})
 
 def dbHandsInsert(user, book):
     global db
@@ -129,10 +129,10 @@ def terminal():
 @app.route('/connect')
 def get_current_user():
     client_ip = request.remote_addr
-    if(dbClientsFind(client_ip) is not None):
+    if(dbTerminalsFind(client_ip) is not None):
         return ""
     else:
-        dbClientsInsert(client_ip)
+        dbTerminalsInsert(client_ip)
         return jsonify(terminal_id=uuid.uuid4())
         
 
