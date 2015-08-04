@@ -3,11 +3,12 @@
 
 import configparser
 from datetime import datetime
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, jsonify
 import flask
 import logging
 import pymongo
-
+import requests
+import uuid
 
 config = configparser.ConfigParser()
 config.read('config.cf')
@@ -18,6 +19,40 @@ db = pymongo.MongoClient().digital_library
 
 app = Flask('digital_library')
 
+def dbClientsInsert(client_ip):
+    global db
+    db.clients.insert({"ip": client_ip})
+
+def dbClientsFind(client_ip):
+    global db
+    return db.clients.find_one({'ip': client_ip})
+
+def dbHandsInsert(user, book):
+    global db
+    now = datetime.utcnow()
+    db.hands.insert({
+            "user": user,
+            "book": book,
+            "datetime": now,
+        })
+
+def dbHandFind(user, book):
+    global db
+    return db.hands.find_one({'user': user, 'book': book})
+
+def dbHandsRemove(user, book):
+    global db
+    db.hands.remove({"user": user, "book": book})
+
+def dbJournalInsert(user, book, action):
+    global db
+    now = datetime.utcnow()
+    db.journal.insert({
+            "user": user,
+            "book": book,
+            "datetime": now,
+            "action": action,
+        })
 
 def render_template(template_name, **context):
     test_books = [
@@ -86,20 +121,20 @@ def operations():
     return render_template("operations")
 
 
-@app.route('/term', methods = ['POST'])
+@app.route('/term', methods=['POST'])
 def terminal():
     form = request.form
-    if form["type"] == "user":
-        newTerminalUser(form["id"], form["data"])
+    return ""
+
+@app.route('/connect')
+def get_current_user():
+    client_ip = request.remote_addr
+    if(dbClientsFind(client_ip) is not None):
         return ""
     else:
-        userBookOperation(form["id"], form["data"])
-        return ""
-
-
-def newTerminalUser(terminal, user):
-    pass
-
+        dbClientsInsert(client_ip)
+        return jsonify(terminal_id=uuid.uuid4())
+        
 
 def curentTerminalUser(terminal):
     return "testUser"
@@ -113,31 +148,17 @@ def successBookReturn(terminal, book):
     pass
 
 
+
 def userBookOperation(terminal, book):
-    global db
     user = curentTerminalUser(terminal)
     now = datetime.utcnow()
-    if db.hands.find_one({'user': user, 'book': book}) is not None:
-        db.hands.insert({
-            "user": user,
-            "book": book,
-            "datetime": now,
-        })
-        db.journal.insert({
-            "user": user,
-            "book": book,
-            "datetime": now,
-            "action": "hand",
-        })
+    if dbHandFind(user, book) is not None:
+        dbHandsInsert(user, book)
+        dbJournalInsert(user, book, "hand")
         successBookHand(terminal, book)
     else:
-        db.hands.remove({"user": user, "book": book})
-        db.journal.insert({
-            "user": user,
-            "book": book,
-            "datetime": now,
-            "action": "return",
-        })
+        dbHandsRemove(user, book)
+        dbJournalInsert(user, book, "return")
         successBookReturn(terminal, book)
 
 

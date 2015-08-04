@@ -3,6 +3,7 @@ host = ::
 [Demon]
 bookScanner = path
 userScanner = path
+uuid = id
 [Resizer]
 height = 320
 path = /home/igor/Coding/Library/image.jpg
