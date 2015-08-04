@@ -1,0 +1,26 @@
+#!/bin/bash
+set -eux
+set -o pipefail
+
+pep8_options=(
+    --ignore=E501  # line too long (TODO)
+    --show-source
+)
+
+pylint_options=(
+    --disable=invalid-name
+    --disable=line-too-long  # TODO
+    --disable=missing-docstring
+    --disable=star-args
+    --include-naming-hint=yes
+    --output-format=colorized
+    --reports=no
+)
+
+find . -name '*.py' | xargs pep8 ${pep8_options[*]}
+
+pylint3 ${pylint_options[*]} *.py
+
+py.test-3 *.py
+
+echo OK

@@ -2,80 +2,78 @@
 # -*- coding: utf-8 -*-
 
 import configparser
-import threading
-import time
-import requests
 import json
+import requests
+from threading import Thread
 
 
-config = configparser.ConfigParser()
-config.read('config.cf')
-
-if(config["Demon"]["uuid"] == "id"): 
-	config["Demon"]["uuid"] = json.loads(requests.get("http://localhost:5000/connect").text)["terminal_uuid"]
-	terminal_uuid = config["Demon"]["uuid"]
+def scanner_read(device_file):
+    with open(device_file) as device:
+        return device.readline().strip("\2\3\r\n")
 
 
-class Scanner:
-    def __init__(self, device_file):
-        self.device_file = open(device_file)
-        self.fd = None
-
-    def __enter__(self):
-        assert self.fd is None
-        self.fd = open(self.device_file)
-
-    def __leave__(self):
-        self.fd.close()
-        self.fd = None
-
-
-def send_terminal_data(user, book):
+def send_scanner_data(user, book):
+    """ Send scanned data to the server """
     requests.post(
-        "http://localhost:5000/term",
+        "http://localhost:5000/scanner_data",
         data={"user": user, "book": book, "id": terminal_uuid},
     )
 
+
 pack_none = {
-	"user": None,
-	"book": None,
+    "user": None,
+    "book": None,
 }
+
 
 pack = pack_none
 
-def scan_user():
-	global pack, pack_none
-    with Scanner(config["Demon"]["userScanner"]) as scanner:
-    	user = scanner.read().strip("\2\3\r\n")
-    	if(pack.user != None and pack.book == None):
-    		pack.user = user
-    		return
-    	if(pack == pack_none):
-        	pack.user = user
-        else:
-        	pack.user = user
-        	send_terminal_data(pack.user, pack.book)
-        	pack = pack_none
 
-
-def scan_book():
+def scan_user(device_file):
     global pack, pack_none
-    with Scanner(config["Demon"]["bookScanner"]) as scanner:
-    	book = scanner.read().strip("\2\3\r\n")
-    	if(pack.book != None and pack.user == None):
-    		pack.book = book
-    		return
-    	if(pack == pack_none):
-        	pack.book = book
-        else:
-        	pack.book = book
-        	send_terminal_data(pack.user, pack.book)
-        	pack = pack_none
+    user = scanner_read(device_file)
+    if(pack.user != None and pack.book == None):
+        pack.user = user
+        return
+    if(pack == pack_none):
+        pack.user = user
+    else:
+        pack.user = user
+        send_scanner_data(pack.user, pack.book)
+        pack = pack_none
+
+
+def scan_book(device_file):
+    global pack, pack_none
+    book = scanner_read(device_file)
+    if(pack.book != None and pack.user == None):
+        pack.book = book
+        return
+    if(pack == pack_none):
+        pack.book = book
+    else:
+        pack.book = book
+        send_scanner_data(pack.user, pack.book)
+        pack = pack_none
 
 
 def main():
-    threadUser = threading.Thread(target=scan_user)
-    threadBook = threading.Thread(target=scan_book)
+    config = configparser.ConfigParser()
+    config.read('config.cf')
+
+    if "uuid" not in config["Demon"]:
+        config["Demon"]["uuid"] = (
+            requests.get("http://localhost:5000/connect").json
+            ["terminal_uuid"]
+        )
+        terminal_uuid = config["Demon"]["uuid"]
+
+    thread_user = Thread(
+        target=scan_user, args=(config["Demon"]["userScanner"],)
+    )
+    thread_book = Thread(
+        target=scan_book, args=(config["Demon"]["bookScanner"],)
+    )
 
 
 if __name__ == '__main__':
