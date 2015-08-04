@@ -7,6 +7,12 @@ import requests
 from threading import Thread
 
 
+def load_config():
+    config = configparser.ConfigParser()
+    config.read('config.cf')
+    return config['Demon']
+
+
 def scanner_read(device_file):
     with open(device_file) as device:
         return device.readline().strip("\2\3\r\n")
@@ -58,22 +64,17 @@ def scan_book(device_file):
 
 
 def main():
-    config = configparser.ConfigParser()
-    config.read('config.cf')
+    config = load_config()
 
-    if "uuid" not in config["Demon"]:
-        config["Demon"]["uuid"] = (
+    if "uuid" not in config:
+        config["uuid"] = (
             requests.get("http://localhost:5000/connect").json
             ["terminal_uuid"]
         )
-        terminal_uuid = config["Demon"]["uuid"]
+        terminal_uuid = config["uuid"]
 
-    thread_user = Thread(
-        target=scan_user, args=(config["Demon"]["userScanner"],)
-    )
-    thread_book = Thread(
-        target=scan_book, args=(config["Demon"]["bookScanner"],)
-    )
+    thread_user = Thread(target=scan_user, args=(config["userScanner"],))
+    thread_book = Thread(target=scan_book, args=(config["bookScanner"],))
 
 
 if __name__ == '__main__':
