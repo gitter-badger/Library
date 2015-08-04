@@ -1,3 +1,13 @@
+{% macro inflect(n, form1, form2, form5) -%}
+    {% if n % 10 == 1 %}
+        {{form1}}
+    {% elif n % 10 in [2, 3, 4] %}
+        {{form2}}
+    {% else %}
+        {{form5}}
+    {% endif %}
+{%- endmacro %}
+
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -32,21 +42,15 @@
                             </li>
                         {% endif %}
                     </ul>
-                    <form class="navbar-form navbar-right">
-                        {% if recomendedBooksLen % 10 == 1 %}
-                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{recomendedBooksLen}} книга</p>
-                        {% endif %}
-
-                        {% if recomendedBooksLen % 10 == 2 or recomendedBooksLen % 10 == 3 or recomendedBooksLen % 10 == 4 %}
-                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{recomendedBooksLen}} книги</p>
-                        {% endif %}
-
-                        {% if recomendedBooksLen % 10 > 4 or recomendedBooksLen % 10 == 0 %}
-                            <p class="navbar-text" style="font-size:16px; margin: 6px; margin-right: 20px;">{{user.name}}. На руках {{recomendedBooksLen}} книг</p>
-                        {% endif %}
-
-                        <a href="/login" class="btn btn-default">Выход</a>
-                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <p class="navbar-text">
+                                {{user.name}}.
+                                На руках {{booksLen}} {{inflect(booksLen, 'книга', 'книги', 'книг')}}
+                            </p>
+                        </li>
+                        <li><a href="/login" class="btn btn-default">Выход</a></li>
+                    </ul>
                 </div>
             </div>
         </nav>

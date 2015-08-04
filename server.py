@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import configparser, flask, logging, pymongo
+import configparser
 from datetime import datetime
 from flask import Flask, redirect, request
+import flask
+import logging
+import pymongo
 
 
 config = configparser.ConfigParser()
@@ -49,7 +52,7 @@ def render_template(template_name, **context):
     }
     return flask.render_template(
         template_name + '.html',
-        **dict(context, template_name = template_name, **test_context)
+        **dict(context, template_name=template_name, **test_context)
     )
 
 
@@ -113,27 +116,28 @@ def successBookReturn(terminal, book):
 def userBookOperation(terminal, book):
     global db
     user = curentTerminalUser(terminal)
+    now = datetime.utcnow()
     if db.hands.find_one({'user': user, 'book': book}) is not None:
         db.hands.insert({
             "user": user,
             "book": book,
-            "datetime": datetime.utcnow(),
+            "datetime": now,
         })
         db.journal.insert({
             "user": user,
             "book": book,
-            "datetime" datetime.utcnow(),
+            "datetime": now,
             "action": "hand",
-            })
+        })
         successBookHand(terminal, book)
     else:
         db.hands.remove({"user": user, "book": book})
         db.journal.insert({
             "user": user,
             "book": book,
-            "datetime" datetime.utcnow(),
+            "datetime": now,
             "action": "return",
-            })
+        })
         successBookReturn(terminal, book)
 
 
