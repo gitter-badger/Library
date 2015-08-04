@@ -3,13 +3,13 @@ set -eux
 set -o pipefail
 
 pep8_options=(
-    --ignore=E501  # line too long (TODO)
+    --ignore=E501  # line too long. TODO don't ignore
     --show-source
 )
 
 pylint_options=(
-    --disable=invalid-name
-    --disable=line-too-long  # TODO
+    --disable=invalid-name  # TODO don't ignore
+    --disable=line-too-long  # TODO don't ignore
     --disable=missing-docstring
     --disable=star-args
     --include-naming-hint=yes
@@ -21,6 +21,6 @@ find . -name '*.py' | xargs pep8 ${pep8_options[*]}
 
 pylint3 ${pylint_options[*]} *.py
 
-py.test-3 *.py
+py.test-3
 
 echo OK
