@@ -1,11 +1,23 @@
-import PIL, configparser
-from PIL import Image
+#!/usr/bin/env python3
 
-config = configparser.ConfigParser()
-config.read('config.cf')
+import configparser
+import PIL.Image
 
-img = Image.open(config["Resizer"]["path"])
-height = int(config["Resizer"]["height"])
-width = int(img.size[0] * (height / img.size[1]))
-img = img.resize((width, height), PIL.Image.ANTIALIAS)
-img.save(config["Resizer"]["path"])
+
+def load_config():
+    config = configparser.ConfigParser()
+    config.read('config.cf')
+    return config['Resizer']
+
+
+def main():
+    config = load_config()
+    img = PIL.Image.open(config["path"])
+    height = int(config["height"])
+    width = int(img.size[0] * (height / img.size[1]))
+    img = img.resize((width, height), PIL.Image.ANTIALIAS)
+    img.save(config["path"])
+
+
+if __name__ == '__main__':
+    main()
