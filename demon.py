@@ -9,7 +9,7 @@ from threading import Thread
 
 def load_config():
     config = configparser.ConfigParser()
-    config.read('config.cf')
+    config.read('config')
     return config['Demon']
 
 

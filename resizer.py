@@ -6,7 +6,7 @@ import PIL.Image
 
 def load_config():
     config = configparser.ConfigParser()
-    config.read('config.cf')
+    config.read('config')
     return config['Resizer']
 
 
