@@ -1,0 +1,9 @@
+{
+  "allowed_origins": [
+    "chrome-extension://knldjmfmopnpolahpmmgbagdohdnhkik/"
+  ],
+  "description": "Digital library terminal client",
+  "name": "ru.1303.digital-library",
+  "path": "/bin/digital-library-daemon",
+  "type": "stdio"
+}
