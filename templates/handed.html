@@ -7,9 +7,9 @@
     <div class="row">
         {% for book in books %}
             <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
+                <div class="thumbnail" style="min-height: 470px; max-height: 470px;">
                     <img src="{{book.image}}" alt="">
-                    <div class="caption">
+                    <div class="caption" style="padding: 2em 0; text-align: center;">
                         <h3>{{book.title}}</h3>
                         <p>{{book.author}}</p>
                     </div>
