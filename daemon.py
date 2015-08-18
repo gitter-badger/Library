@@ -6,7 +6,13 @@ import wx.html2
 import json
 import requests
 from threading import Thread
+import ConfigParser
 
+
+def load_config():
+    config = ConfigParser.ConfigParser()
+    config.read("config")
+    return config
 
 class MyBrowser(wx.Dialog):
     def __init__(self, *args, **kwds):
@@ -68,12 +74,13 @@ def scan_book(device_file):
 
 
 def main():
+    config = load_config()
     terminal_uuid = requests.get("http://localhost:5000/connect").json()["terminal_uuid"]
-    thread_user = Thread(target=scan_user, args="userScanner")
-    thread_book = Thread(target=scan_book, args="bookScanner")
+    thread_user = Thread(target=scan_user, args=config.get("Demon", "userScanner"))
+    thread_book = Thread(target=scan_book, args=config.get("Demon", "bookScanner"))
     app = wx.App()
     dialog = MyBrowser(None, -1)
-    dialog.browser.LoadURL("http://localhost:5000/")
+    dialog.browser.LoadURL(config.get("Demon", "url"))
     dialog.SetTitle("Библиотека Московского Химического Лицея")
     dialog.Show()
     app.MainLoop()
