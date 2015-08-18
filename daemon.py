@@ -3,7 +3,6 @@
 
 import wx
 import wx.html2
-import json
 import requests
 from threading import Thread
 import ConfigParser
@@ -13,6 +12,7 @@ def load_config():
     config = ConfigParser.ConfigParser()
     config.read("config")
     return config
+
 
 class MyBrowser(wx.Dialog):
     def __init__(self, *args, **kwds):
@@ -78,6 +78,8 @@ def main():
     terminal_uuid = requests.get("http://localhost:5000/connect").json()["terminal_uuid"]
     thread_user = Thread(target=scan_user, args=config.get("Demon", "userScanner"))
     thread_book = Thread(target=scan_book, args=config.get("Demon", "bookScanner"))
+    thread_book.start()
+    thread_user.start()
     app = wx.App()
     dialog = MyBrowser(None, -1)
     dialog.browser.LoadURL(config.get("Demon", "url"))

@@ -22,7 +22,7 @@ def load_config():
 
 def open_db():
     return pymongo.MongoClient().digital_library
-    
+
 db = open_db()
 
 
@@ -66,7 +66,7 @@ def db_hand_delete(user, book):
 
 def db_handlog_add(user, book, event):
     global db
-    assert event in {'hand', 'return'}
+    assert event in {'take', 'return'}
     now = datetime.utcnow()
     db.handlog.insert({
         "user": user,
@@ -81,22 +81,22 @@ def render_template(template_name, **context):
         {
             "title": "Что такое математика?",
             "author": "Р. Курант, Г. Роббинс",
-            "image": "http://math4school.ru/img/math4school_ru/books/book_review_002.jpg",
+            "id": "curant",
         },
         {
             "title": "Сборник задач по алгебре",
             "author": "М.Л. Галицкий, А.М. Гольдман, Л.И. Звавич",
-            "image": "http://static.my-shop.ru/product/2/1/8224.jpg",
+            "id": "gal",
         },
         {
             "title": "Алгоритмы: построение и анализ",
             "author": "К. Штайн, Р. Линн Ривест, Т. Кормен, Ч. Эрик Лейзерсон",
-            "image": "http://bookimir.ru/uploads/posts/2014-03/thumbs/1395595379_pzrkjqvsr9nihts.jpeg",
+            "id": "cormen",
         },
         {
             "title": "Совершенный код",
             "author": "С. Макконнелл",
-            "image": "http://s4.goods.ozstatic.by/200/206/15/1/1015206_0_Sovershenniy_kod_Master-klass_Stiv_MakKonnell.jpg",
+            "id": "codecompl",
         },
     ]
     test_context = {
@@ -143,12 +143,6 @@ def operations():
     return render_template("operations")
 
 
-@app.route('/scanner_data', methods=['POST'])
-def scanner_data():
-    form = request.form
-    return ""
-
-
 @app.route('/connect')
 def get_current_user():
     client_ip = request.remote_addr
@@ -161,29 +155,19 @@ def get_current_user():
         return jsonify(terminal_uuid=terminal_uuid)
 
 
-def current_terminal_user(terminal):
-    return "testUser"
-
-
-def success_book_hand(terminal, book):
-    pass
-
-
-def success_book_return(terminal, book):
-    pass
-
-
-def user_book_operation(terminal, book):
-    user = current_terminal_user(terminal)
-    now = datetime.utcnow()
+@app.route('/api/book/action', methods=['POST'])
+def api_book_action():
+    form = request.form
+    user, book = form["user"], form["book"]
     if db_hand_exists(user, book):
-        db_hand_add(user, book)
-        db_handlog_add(user, book, "hand")
-        success_book_hand(terminal, book)
-    else:
         db_hand_delete(user, book)
         db_handlog_add(user, book, "return")
-        success_book_return(terminal, book)
+        action = "return"
+    else:
+        db_hand_add(user, book)
+        db_handlog_add(user, book, "take")
+        action = "take"
+    return jsonify(action=action, book=book)
 
 
 def main():
