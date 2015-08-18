@@ -1,6 +1,7 @@
 #!/bin/bash
+set -euxE
 
 ./server.py &
-./start_daemon.py &
+./start_termclient.py &
 
 wait
