@@ -1,16 +1,21 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-import configparser
+import wx
+import wx.html2
 import json
 import requests
 from threading import Thread
 
 
-def load_config():
-    config = configparser.ConfigParser()
-    config.read('config')
-    return config['Demon']
+class MyBrowser(wx.Dialog):
+    def __init__(self, *args, **kwds):
+        wx.Dialog.__init__(self, *args, **kwds)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.browser = wx.html2.WebView.New(self)
+        sizer.Add(self.browser, 1, wx.EXPAND, 10)
+        self.SetSizer(sizer)
+        self.SetSize(wx.GetDisplaySize())
 
 
 def scanner_read(device_file):
@@ -31,17 +36,16 @@ pack_none = {
     "book": None,
 }
 
-
 pack = pack_none
 
 
 def scan_user(device_file):
     global pack, pack_none
     user = scanner_read(device_file)
-    if(pack.user != None and pack.book == None):
+    if pack.user is not None and pack.book is None:
         pack.user = user
         return
-    if(pack == pack_none):
+    if pack == pack_none:
         pack.user = user
     else:
         pack.user = user
@@ -52,10 +56,10 @@ def scan_user(device_file):
 def scan_book(device_file):
     global pack, pack_none
     book = scanner_read(device_file)
-    if(pack.book != None and pack.user == None):
+    if pack.book is not None and pack.user is None:
         pack.book = book
         return
-    if(pack == pack_none):
+    if pack == pack_none:
         pack.book = book
     else:
         pack.book = book
@@ -64,18 +68,15 @@ def scan_book(device_file):
 
 
 def main():
-    config = load_config()
-
-    if "uuid" not in config:
-        config["uuid"] = (
-            requests.get("http://localhost:5000/connect").json
-            ["terminal_uuid"]
-        )
-        terminal_uuid = config["uuid"]
-
-    thread_user = Thread(target=scan_user, args=(config["userScanner"],))
-    thread_book = Thread(target=scan_book, args=(config["bookScanner"],))
-
+    terminal_uuid = requests.get("http://localhost:5000/connect").json()["terminal_uuid"]
+    thread_user = Thread(target=scan_user, args="userScanner")
+    thread_book = Thread(target=scan_book, args="bookScanner")
+    app = wx.App()
+    dialog = MyBrowser(None, -1)
+    dialog.browser.LoadURL("http://localhost:5000/")
+    dialog.SetTitle("Библиотека Московского Химического Лицея")
+    dialog.Show()
+    app.MainLoop()
 
 if __name__ == '__main__':
     main()

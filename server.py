@@ -22,6 +22,8 @@ def load_config():
 
 def open_db():
     return pymongo.MongoClient().digital_library
+    
+db = open_db()
 
 
 def db_terminal_add(client_ip, terminal_uuid):
