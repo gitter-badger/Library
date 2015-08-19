@@ -8,17 +8,19 @@
         <img id="cover" src="" alt="" class="img-thumbnail", style="width: 370px; height: 500px; margin-top: 30px;">
         <h2 id="status">Статус операции</h2>
     </div>
-
+	<script src="/static/js/jquery.js"></script>
     <script>
-    $.get("http://localhost:5000/api/book/action", 
-    	function(data) {
-    		$("#cover").src = "http://localhost:5000/static/book/large-covers/" + data["book"] + ".jpg";
-    		if(data["action"] == "take") {
-    			$("#staus").innerText = "Вы взяли книгу"
-    		} else {
-    			$("#staus").innerText = "Вы вернули книгу"
-    		}
-    	},
-    	"json")
+    window.setInterval(function() {
+	    $.get("http://localhost:5000/api/book/action", 
+	    	function(data) {
+	    		$("#cover").src = "http://localhost:5000/static/book/large-covers/" + data["book"] + ".jpg";
+	    		if(data["action"] == "take") {
+	    			$("#staus").innerText = "Вы взяли книгу";
+	    		} else {
+	    			$("#staus").innerText = "Вы вернули книгу";
+	    		}
+	    	},
+	    	"json");
+    }, 5000)
     </script>
 {% endblock %}

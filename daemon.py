@@ -30,11 +30,7 @@ def scanner_read(device_file):
 
 
 def send_scanner_data(user, book):
-    """ Send scanned data to the server """
-    requests.post(
-        "http://localhost:5000/scanner_data",
-        data={"user": user, "book": book, "id": terminal_uuid},
-    )
+    requests.post("http://localhost:5000/api/book/action",data={"user": user, "book": book,},)
 
 
 pack_none = {
