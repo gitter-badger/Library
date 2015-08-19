@@ -3,7 +3,6 @@ set -eux
 set -o pipefail
 
 pep8_options=(
-    --ignore=E501  # line too long. TODO don't ignore
     --show-source
 )
 
