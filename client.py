@@ -39,7 +39,7 @@ def scan_user(device_file):
     if curent_user is not None and curent_book is None:
         curent_user = user
         return
-    if curent_user == None and curent_book == None:
+    if curent_user is None and curent_book is None:
         curent_user = user
     else:
         curent_user = user
@@ -53,7 +53,7 @@ def scan_book(device_file):
     if curent_book is not None and curent_user is None:
         curent_book = book
         return
-    if curent_user == None and curent_book == None:
+    if curent_user is None and curent_book is None:
         curent_book = book
     else:
         curent_book = book
