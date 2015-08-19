@@ -18,4 +18,4 @@ else:
     sys.exit(1)
 
 os.environ['LD_PRELOAD'] = WX_WEBVIEW_LIB
-subprocess.check_call('./daemon.py')
+subprocess.check_call('./client.py')

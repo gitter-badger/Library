@@ -30,7 +30,7 @@ def scanner_read(device_file):
 
 
 def send_scanner_data(user, book):
-    requests.post("http://localhost:5000/api/book/action",data={"user": user, "book": book,},)
+    self.browser.RunScript("send_scanner_data({!r}, {!r})".format(user, book))
 
 
 pack_none = {
