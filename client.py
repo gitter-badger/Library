@@ -50,7 +50,7 @@ def scan_user(device_file):
     else:
         pack.user = user
         send_scanner_data(pack.user, pack.book)
-        pack = {"user": None, "book": None,}
+        pack.user is None and pack.book is None
 
 
 def scan_book(device_file):
@@ -64,7 +64,7 @@ def scan_book(device_file):
     else:
         pack.book = book
         send_scanner_data(pack.user, pack.book)
-        pack = {"user": None, "book": None,}
+        pack.user is None and pack.book is None
 
 
 def main():
