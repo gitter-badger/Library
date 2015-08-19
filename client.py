@@ -33,40 +33,38 @@ def send_scanner_data(user, book):
     self.browser.RunScript("send_scanner_data({!r}, {!r})".format(user, book))
 
 
-pack_none = {
+pack = {
     "user": None,
     "book": None,
 }
 
-pack = pack_none
-
 
 def scan_user(device_file):
-    global pack, pack_none
+    global pack
     user = scanner_read(device_file)
     if pack.user is not None and pack.book is None:
         pack.user = user
         return
-    if pack == pack_none:
+    if pack == {"user": None, "book": None,}:
         pack.user = user
     else:
         pack.user = user
         send_scanner_data(pack.user, pack.book)
-        pack = pack_none
+        pack = {"user": None, "book": None,}
 
 
 def scan_book(device_file):
-    global pack, pack_none
+    global pack
     book = scanner_read(device_file)
     if pack.book is not None and pack.user is None:
         pack.book = book
         return
-    if pack == pack_none:
+    if pack == {"user": None, "book": None,}:
         pack.book = book
     else:
         pack.book = book
         send_scanner_data(pack.user, pack.book)
-        pack = pack_none
+        pack = {"user": None, "book": None,}
 
 
 def main():
