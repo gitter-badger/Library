@@ -12,7 +12,7 @@
         function send_scaner_data(user, book) {
             $.post(
                 "http://localhost:5000/api/book/action",
-                {user: 2, book: "curant"},
+                {user: user, book: book},
                 function(data) {
                     $("#cover").attr(
                         'src',
