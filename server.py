@@ -155,7 +155,7 @@ def get_current_user():
         return jsonify(terminal_uuid=terminal_uuid)
 
 
-@app.route('/api/book/action', methods=['GET'])
+@app.route('/api/book/action', methods=['POST'])
 def api_book_action():
     form = request.form
     user, book = form["user"], form["book"]
